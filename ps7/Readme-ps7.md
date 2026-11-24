@@ -16,11 +16,11 @@ Each boot entry includes its line number and timestamp. The report also shows th
 
 ### Approach
 
-I read the log one line at a time and keep track of the current boot. When I find its completion message, I use Python's datetime module to calculate how long it took.
+I went through each log one line at a time and used regular expressions to find the boot start and completion messages. Then I used Python's datetime module to calculate how long each completed boot took.
 
 ### Regex
 
-One regular expression finds the timestamp and the specific (log.c.166) server started message. The other finds the connector-start message that marks a completed boot.
+One regular expression finds the timestamp and the specific log.c.166 server started message. The other finds the connector-start message that marks a completed boot.
 
 ### Issues
 
