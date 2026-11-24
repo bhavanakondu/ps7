@@ -8,27 +8,27 @@ Time to Complete: 2 days
 
 ## Description
 
-I wrote a Python program that reads a Kronos InTouch log and writes a .rpt file listing each device boot, its completion status, and its duration.
+I wrote a Python program that reads a Kronos InTouch log and creates a .rpt file listing each boot, whether it completed, and how long it took. It writes the report beside the input log.
 
 ### Features
 
-The report includes a boot summary and each boot's start and completion line numbers and timestamps. An attempt is incomplete if another boot starts first or the log ends before boot completion.
+Each boot entry includes its line number and timestamp. The report also shows the log filename, lines scanned, total boot attempts, and completed boots. An attempt is marked incomplete if another boot starts first or the log ends before it completes.
 
 ### Approach
 
-I read the log one line at a time, match each boot start with its completion, and use datetime to calculate the elapsed time.
+I read the log one line at a time and keep track of the current boot. When I find its completion message, I use Python's datetime module to calculate how long it took.
 
 ### Regex
 
-One regular expression matches the timestamp and (log.c.166) server started message. Another matches the connector-start message that marks boot completion.
+One regular expression finds the timestamp and the specific (log.c.166) server started message. The other finds the connector-start message that marks a completed boot.
 
 ### Issues
 
-Other server started messages appear in the logs, so I matched the specific log.c.166 message required by the assignment.
+Some log lines say server started but do not indicate a device boot. I matched the specific log.c.166 message to avoid counting those lines as boot starts.
 
 ### Extra Credit
 
-I included a summary header showing the total number of boot attempts and how many completed. I did not include service tracking.
+I added a summary header with the log filename, lines scanned, total boot attempts, and completed boots. I did not implement the optional service tracking.
 
 ## Acknowledgements
 
