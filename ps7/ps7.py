@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-"""Generate a Kronos InTouch device boot report from a log file."""
+# Copyright 2026 Bhavana Kondu
 
 from __future__ import annotations
 
@@ -56,7 +55,6 @@ class LogReport:
 
 def parse_timestamp(value: str, line_number: int) -> datetime:
     try:
-        # The supplied sample reports use whole-second boot timestamps.
         return datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
     except ValueError as error:
         raise ValueError(
@@ -76,7 +74,6 @@ def analyze_log(input_path: Path) -> LogReport:
             line_count = line_number
             start_match = BOOT_START_RE.search(line)
             if start_match:
-                # The next start closes the previous boot's service-tracking window.
                 active_boot = Boot(
                     start_line=line_number,
                     start_time=parse_timestamp(
