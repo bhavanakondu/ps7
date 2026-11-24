@@ -27,10 +27,12 @@ def main():
 
     boots = []
     current_boot = None
+    line_count = 0
 
     try:
         with input_file.open("r", encoding="utf-8", errors="replace") as log_file:
             for line_number, line in enumerate(log_file, start=1):
+                line_count = line_number
                 start = BOOT_START.search(line)
                 if start:
                     current_boot = {
@@ -50,7 +52,19 @@ def main():
                     )
                     current_boot = None
 
-        report = []
+        completed_count = sum("complete_line" in boot for boot in boots)
+        report = [
+            "Device Boot Report",
+            "",
+            f"InTouch log file: {input_file.name}",
+            f"Lines Scanned: {line_count}",
+            "",
+            (
+                "Device boot count: initiated = "
+                f"{len(boots)}, completed: {completed_count}"
+            ),
+            "",
+        ]
         for boot in boots:
             report.append("=== Device boot ===")
             report.append(

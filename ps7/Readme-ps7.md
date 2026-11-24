@@ -13,9 +13,9 @@ file listing each device boot, its completion status, and its duration.
 
 ### Features
 
-The program reports boot start and completion line numbers and timestamps.
-An attempt is incomplete if another boot starts first or the log ends before
-boot completion.
+The report includes a boot summary and each boot's start and completion line
+numbers and timestamps. An attempt is incomplete if another boot starts first
+or the log ends before boot completion.
 
 ### Approach
 
@@ -34,7 +34,8 @@ Other `server started` messages appear in the logs, so I matched the specific
 
 ### Extra Credit
 
-I did not implement the optional service tracking.
+I included the summary header and boot counts. I did not implement optional
+service tracking.
 
 ## Acknowledgements
 
