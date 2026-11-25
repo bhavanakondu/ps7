@@ -8,7 +8,7 @@ Time to Complete: 2 days
 
 ## Description
 
-I wrote a Python program that reads a Kronos InTouch log and creates a .rpt file listing each boot, whether it completed, and how long it took. It writes the report beside the input log.
+I wrote a Python program to read Kronos InTouch logs and report each device boot, whether it finished, and how long it took.
 
 ### Features
 
@@ -20,7 +20,7 @@ I went through each log one line at a time and used regular expressions to find 
 
 ### Regex
 
-One regular expression finds the timestamp and the specific log.c.166 server started message. The other finds the connector-start message that marks a completed boot.
+One regular expression finds the timestamp and the specific log.c.166 server started message. The other finds the connector start message that marks a completed boot.
 
 ### Issues
 
