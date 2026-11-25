@@ -8,7 +8,6 @@ from pathlib import Path
 TIME = r"(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})(?:\.\d+)?\s*:\s*"
 START = re.compile(TIME + r"\(log\.c\.166\)\s*server started\b")
 END = re.compile(TIME + r"INFO:oejs\.AbstractConnector:Started SelectChannelConnector")
-TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
 def main():
@@ -24,48 +23,27 @@ def main():
             for line_count, line in enumerate(log_file, 1):
                 match = START.search(line)
                 if match:
-                    active = {
-                        "line": line_count,
-                        "time": datetime.strptime(match["time"], TIME_FORMAT),
-                    }
+                    active = [line_count, datetime.fromisoformat(match["time"]), None]
                     boots.append(active)
                     continue
                 match = END.search(line)
                 if match and active is not None:
-                    active["end"] = (
-                        line_count,
-                        datetime.strptime(match["time"], TIME_FORMAT),
-                    )
+                    active[2] = (line_count, datetime.fromisoformat(match["time"]))
                     active = None
-
-        completed = sum("end" in boot for boot in boots)
+        completed = sum(boot[2] is not None for boot in boots)
         report = [
-            "Device Boot Report",
-            "",
+            "Device Boot Report", "",
             f"InTouch log file: {log.name}",
-            f"Lines Scanned: {line_count}",
-            "",
-            f"Device boot count: initiated = {len(boots)}, completed: {completed}",
-            "",
+            f"Lines Scanned: {line_count}", "",
+            f"Device boot count: initiated = {len(boots)}, completed: {completed}", "",
         ]
-        for boot in boots:
-            report.extend(
-                [
-                    "=== Device boot ===",
-                    f'{boot["line"]}({log.name}): '
-                    f'{boot["time"]:%Y-%m-%d %H:%M:%S} Boot Start',
-                ]
-            )
-            if "end" in boot:
-                end_line, end_time = boot["end"]
-                duration = int((end_time - boot["time"]).total_seconds() * 1000)
-                report.extend(
-                    [
-                        f'{end_line}({log.name}): '
-                        f'{end_time:%Y-%m-%d %H:%M:%S} Boot Completed',
-                        f"\tBoot Time: {duration}ms",
-                    ]
-                )
+        for start_line, start_time, end in boots:
+            report.extend(["=== Device boot ===",
+                           f'{start_line}({log.name}): {start_time:%Y-%m-%d %H:%M:%S} Boot Start'])
+            if end:
+                end_line, end_time = end
+                report.extend([f'{end_line}({log.name}): {end_time:%Y-%m-%d %H:%M:%S} Boot Completed',
+                               f"\tBoot Time: {int((end_time - start_time).total_seconds() * 1000)}ms"])
             else:
                 report.append("**** Incomplete boot ****")
             report.append("")
